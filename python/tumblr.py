@@ -1,4 +1,6 @@
 from pytumblr import TumblrRestClient
+from picamera import PiCamera
+from datetime import datetime
 from time import sleep
 from auth import (
     consumer_key,
@@ -21,8 +23,16 @@ try:
 except KeyError:
     raise RuntimeError("Could not connect to Tumblr. Check auth keys.")
 
-def main():
-    photo = "/home/ben/tumblr/photo.jpg"
+PHOTOS_DIR = '/home/pi/photos'
+
+def take_picture():
+    with PiCamera() as camera:
+        timestamp = datetime.now().isoformat()
+        photo_path = '%s/%s.jpg' % (PHOTOS_DIR, timestamp)
+        camera.capture(photo_path)
+    return photo_path
+
+def upload_picture(photo):
     success = False
 
     while not success:
@@ -33,6 +43,10 @@ def main():
         else:
             print("Failed to upload picture. Trying again in 1 minute")
             sleep(60)
+
+def main():
+    photo = take_picture()
+    upload_picture(photo)
 
 if __name__ == '__main__':
     main()
