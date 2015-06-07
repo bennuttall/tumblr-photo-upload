@@ -37,11 +37,12 @@ def upload_picture(photo):
 
     while not success:
         response = client.create_photo(username, data=photo)
+        timestamp = datetime.now().isoformat()
         if 'id' in response:
-            print("Upload successful")
+            print("%s - Upload successful" % timestamp)
             success = True
         else:
-            print("Failed to upload picture. Trying again in 1 minute")
+            print("%s - Failed to upload picture. Trying again in 1 minute" % timestamp)
             sleep(60)
 
 def main():
